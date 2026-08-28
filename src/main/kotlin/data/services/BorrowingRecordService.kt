@@ -7,7 +7,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class BorrowingService @Inject constructor(private val borrowingRecordDao: BorrowingRecordDao) :
+class BorrowingRecordService @Inject constructor(private val borrowingRecordDao: BorrowingRecordDao) :
     BorrowingRecordOperations {
     override fun deleteRecord(recordId: String): BorrowingRecord? {
         return borrowingRecordDao.deleteRecord(recordId)
