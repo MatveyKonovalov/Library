@@ -15,7 +15,8 @@ class UserDao @Inject constructor(): UserOperations{
 
     override fun registerUser(user: User) {
         if (users[user.userId] != null){
-
+            throw IllegalArgumentException("User with this userId<${user.userId}> already exists")
         }
+        users[user.userId] = user
     }
 }
