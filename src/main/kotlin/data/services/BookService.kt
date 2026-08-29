@@ -20,12 +20,23 @@ class BookService @Inject constructor(private val bookDao: BookDao) : BookOperat
         return bookDao.removeBook(isbn)
     }
 
-    override fun findBook(isbn: String): Book? {
-        return bookDao.findBook(isbn)
+    override fun findBookByIsbn(isbn: String): Book? {
+        return bookDao.findBookByIsbn(isbn)
     }
 
     override fun reduceBookAmount(isbn: String, amount: Int): Int? {
         return bookDao.reduceBookAmount(isbn, amount)
     }
 
+    override fun getAllBooks(): List<Book> {
+        return bookDao.getAllBooks()
+    }
+
+    override fun findBookByAuthor(author: String): List<Book> {
+        return bookDao.findBookByAuthor(author)
+    }
+
+    override fun findBookByTitle(title: String): Book? {
+        return bookDao.findBookByTitle(title)
+    }
 }

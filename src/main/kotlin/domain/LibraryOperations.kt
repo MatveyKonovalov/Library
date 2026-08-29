@@ -5,14 +5,18 @@ import org.example.domain.models.*
 
 interface LibraryOperations {
     // Book management
-    fun addBook(title: String, author: String, isbn: String, genre: String)
+    fun addBooks(title: String, author: String, isbn: String, genre: String, amount: Int)
     fun removeAllBook(isbn: String): List<BorrowingRecord>
-    fun findBook(isbn: String): Book?
+    fun findBookByIsbn(isbn: String): Book
     fun reduceAmountBook(isbn: String, amount: Int)
+    fun getAllBooks(): List<Book>
+    fun findBookByAuthor(author: String): List<Book>
+    fun findBookByTitle(title: String): Book
 
     // User Management
     fun registerUser(name: String, userId: String, email: String, userType: UserType)
-    fun findUser(userId: String): User?
+    fun findUser(userId: String): User
+    fun getAllUsers(): List<User>
 
     // Borrowing operations
     fun borrowBook(userId: String, isbn: String)
