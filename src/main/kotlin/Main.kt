@@ -1,9 +1,12 @@
 package org.example
 
-import org.example.presentation.libraryDialog
+import org.example.data.di.DaggerLibraryComponent
+import org.example.presentation.UserConsoleUI
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 fun main() {
-    libraryDialog()
+    val libraryFactory = DaggerLibraryComponent.create()
+    val library = libraryFactory.getLibrary()
+
+    val userConsoleUI = UserConsoleUI(library)
+    userConsoleUI.libraryDialog()
 }

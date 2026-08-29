@@ -21,11 +21,28 @@ class BookDao @Inject constructor() {
         return books.remove(isbn)
     }
 
-    fun findBook(isbn: String): Book? {
+    fun findBookByIsbn(isbn: String): Book? {
         return books[isbn]
     }
 
     fun reduceBookAmount(isbn: String, amount: Int): Int? {
         return books[isbn]?.reduceBook()
+    }
+
+    fun getAllBooks(): List<Book> {
+        return books.values.toList()
+    }
+
+    fun findBookByAuthor(author: String): List<Book> {
+        return books.values.filter { book -> book.author == author }
+    }
+
+    fun findBookByTitle(title: String): Book? {
+        books.values.forEach { book: Book ->
+            if (book.title == title) {
+                return book
+            }
+        }
+        return null
     }
 }

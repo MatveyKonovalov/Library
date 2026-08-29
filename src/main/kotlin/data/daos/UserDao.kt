@@ -19,4 +19,8 @@ class UserDao @Inject constructor(){
         }
         users[user.userId] = user
     }
+
+    fun getAllUsers(): List<User>{
+        return users.values.toList()
+    }
 }

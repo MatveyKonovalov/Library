@@ -16,4 +16,8 @@ class UserService @Inject constructor(private val userDao: UserDao): UserOperati
         return userDao.findUser(userId)
     }
 
+    override fun getAllUsers(): List<User> {
+        return userDao.getAllUsers()
+    }
+
 }
