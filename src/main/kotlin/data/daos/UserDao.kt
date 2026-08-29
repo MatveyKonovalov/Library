@@ -6,14 +6,14 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class UserDao @Inject constructor(): UserOperations{
+class UserDao @Inject constructor(){
     private val users = mutableMapOf<String, User>()
 
-    override fun findUser(userId: String): User? {
+    fun findUser(userId: String): User? {
         return users[userId]
     }
 
-    override fun registerUser(user: User) {
+    fun registerUser(user: User) {
         if (users[user.userId] != null){
             throw IllegalArgumentException("User with this userId<${user.userId}> already exists")
         }

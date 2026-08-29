@@ -2,9 +2,9 @@ package org.example.domain.models
 
 class Student(name: String, userId: String, email: String) : User(name, userId, email) {
     companion object CommonInfo {
-        private const val MAX_BOOKS: Int = 3
-        private const val BORROW_DAYS: Int = 14
-        private const val FINE_PER_DAY: Double = 0.50
+        private val MAX_BOOKS: Int = UserType.STUDENT.maxBooks
+        private val BORROW_DAYS: Int = UserType.STUDENT.borrowDays
+        private val FINE_PER_DAY: Double = UserType.STUDENT.finePerDay
     }
 
     override fun getMaxBooks(): Int = MAX_BOOKS

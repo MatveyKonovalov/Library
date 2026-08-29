@@ -1,26 +1,31 @@
 package org.example.data.daos
 
 import org.example.domain.models.Book
-import org.example.domain.repository.BookOperations
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class BookDao @Inject constructor(): BookOperations {
+class BookDao @Inject constructor() {
     // key: isbn; value: self book and amount
-    private val books = mutableMapOf<String, Pair<Book, Int>>()
+    private val books = mutableMapOf<String, Book>()
 
-    override fun addBook(book: Book) {
-        val key: String = book.isbn
-        val amount: Int = books[key]?.second ?: 0
-        books[key] = book to amount
+    fun addBook(title: String, author: String, isbn: String, genre: String, amount: Int) {
+        if (books.contains(isbn)) {
+            books[isbn]?.plusBook(amount)
+        } else {
+            books[isbn] = Book(title, author, isbn, genre, amount)
+        }
     }
 
-    override fun removeBook(isbn: String): Boolean {
-        return books.remove(isbn) != null
+    fun removeBook(isbn: String): Book? {
+        return books.remove(isbn)
     }
 
-    override fun findBook(isbn: String): Book?{
-        return books[isbn]?.first
+    fun findBook(isbn: String): Book? {
+        return books[isbn]
+    }
+
+    fun reduceBookAmount(isbn: String, amount: Int): Int? {
+        return books[isbn]?.reduceBook()
     }
 }

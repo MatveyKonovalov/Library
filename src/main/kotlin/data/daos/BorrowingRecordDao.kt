@@ -6,26 +6,25 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class BorrowingRecordDao @Inject constructor() : BorrowingRecordOperations {
+class BorrowingRecordDao @Inject constructor() {
     // key: recordId, value: BorrowingRecord
-    private val borrowingRecords = mutableMapOf<String, BorrowingRecord>()
+    private val borrowingRecords = mutableListOf<BorrowingRecord>()
 
-    override fun deleteRecord(recordId: String): BorrowingRecord? {
-        return borrowingRecords[recordId]
-    }
-
-    override fun getRecordById(recordId: String): BorrowingRecord? {
-        return borrowingRecords[recordId]
-    }
-
-    override fun addRecord(record: BorrowingRecord) {
-        if (borrowingRecords[record.recordId] != null) {
-            throw IllegalArgumentException("Record with this recordId<${record.recordId}> already exists")
+    fun deleteRecord(userId: String, isbn: String): BorrowingRecord? {
+        borrowingRecords.forEachIndexed { ind, borrowingRecord ->
+            if (borrowingRecord.isbn == isbn && borrowingRecord.userId == userId) {
+                borrowingRecords.removeAt(ind)
+                return borrowingRecord
+            }
         }
-        borrowingRecords[record.recordId] = record
+        return null
     }
 
-    override fun getAllRecords(): List<BorrowingRecord> {
-        return borrowingRecords.values.sortedBy {borrowingRecord ->  borrowingRecord.borrowingStartTime}
+    fun addRecord(record: BorrowingRecord) {
+        borrowingRecords.add(record)
+    }
+
+    fun getAllRecords(): List<BorrowingRecord> {
+        return borrowingRecords.sortedBy { borrowingRecord -> borrowingRecord.borrowingStartTime }
     }
 }
