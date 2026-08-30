@@ -24,12 +24,13 @@ data class Book(
         freeAmount += amount
     }
 
-    fun reduceBook(amount: Int = 1): Int {
+    fun reduceBook(amount: Int = 1): Boolean {
         if (freeAmount - amount >= 0) {
             freeAmount -= amount
-        } else {
-            freeAmount = 0
+            return true
         }
-        return freeAmount
+        return false
     }
+
+    fun getFreeAmount() = freeAmount
 }

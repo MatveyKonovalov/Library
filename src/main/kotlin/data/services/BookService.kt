@@ -8,12 +8,12 @@ import javax.inject.Singleton
 
 @Singleton
 class BookService @Inject constructor(private val bookDao: BookDao) : BookOperations {
-    override fun addBook(title: String, author: String, isbn: String, genre: String) {
-        addBook(title, author, isbn, genre, 1)
+    override fun addBook(title: String, author: String, isbn: String, genre: String): Pair<Boolean, Book> {
+        return addBook(title, author, isbn, genre, 1)
     }
 
-    override fun addBook(title: String, author: String, isbn: String, genre: String, amount: Int) {
-        bookDao.addBook(title, author, isbn, genre, amount)
+    override fun addBook(title: String, author: String, isbn: String, genre: String, amount: Int): Pair<Boolean, Book> {
+        return bookDao.addBook(title, author, isbn, genre, amount)
     }
 
     override fun removeBook(isbn: String): Book? {
@@ -24,7 +24,7 @@ class BookService @Inject constructor(private val bookDao: BookDao) : BookOperat
         return bookDao.findBookByIsbn(isbn)
     }
 
-    override fun reduceBookAmount(isbn: String, amount: Int): Int? {
+    override fun reduceBookAmount(isbn: String, amount: Int): Pair<Boolean, Int> {
         return bookDao.reduceBookAmount(isbn, amount)
     }
 
@@ -36,7 +36,7 @@ class BookService @Inject constructor(private val bookDao: BookDao) : BookOperat
         return bookDao.findBookByAuthor(author)
     }
 
-    override fun findBookByTitle(title: String): Book? {
+    override fun findBookByTitle(title: String): List<Book> {
         return bookDao.findBookByTitle(title)
     }
 

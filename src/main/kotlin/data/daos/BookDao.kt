@@ -17,11 +17,13 @@ class BookDao @Inject constructor() {
     // key: isbn; value: self book and amount
     private val books by lazy { loadBooksFromFile().toMutableMap() }
 
-    fun addBook(title: String, author: String, isbn: String, genre: String, amount: Int) {
-        if (books.contains(isbn)) {
+    fun addBook(title: String, author: String, isbn: String, genre: String, amount: Int): Pair<Boolean, Book> {
+        return if (books.contains(isbn)) {
             books[isbn]?.plusBook(amount)
+            true to (books[isbn] as Book)
         } else {
             books[isbn] = Book(title, author, isbn, genre, amount)
+            false to (books[isbn] as Book)
         }
     }
 
@@ -33,8 +35,9 @@ class BookDao @Inject constructor() {
         return books[isbn]
     }
 
-    fun reduceBookAmount(isbn: String, amount: Int): Int? {
-        return books[isbn]?.reduceBook(amount)
+    fun reduceBookAmount(isbn: String, amount: Int): Pair<Boolean, Int> {
+        return (books[isbn]?.reduceBook(amount)
+            ?: throw IllegalArgumentException("The book with isbn=$isbn is not found")) to books[isbn]!!.getFreeAmount()
     }
 
     fun getAllBooks(): List<Book> {
@@ -45,13 +48,8 @@ class BookDao @Inject constructor() {
         return books.values.filter { book -> book.author == author }
     }
 
-    fun findBookByTitle(title: String): Book? {
-        books.values.forEach { book: Book ->
-            if (book.title == title) {
-                return book
-            }
-        }
-        return null
+    fun findBookByTitle(title: String): List<Book> {
+        return books.values.filter { book -> book.title == title}
     }
 
     fun saveBooksInFile() {
@@ -64,6 +62,9 @@ class BookDao @Inject constructor() {
             val jsonString = File(FILENAME).readText()
             Json.decodeFromString(jsonString)
         } catch (e: FileNotFoundException) {
+            emptyMap()
+        } catch (e: Exception){
+            println("Book data is corrupted. The story has been updated")
             emptyMap()
         }
     }

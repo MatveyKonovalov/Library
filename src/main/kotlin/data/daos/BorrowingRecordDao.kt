@@ -51,6 +51,9 @@ class BorrowingRecordDao @Inject constructor(private val borrowingRecordMapper: 
                 .map { borrowingRecordEntity -> borrowingRecordMapper.toBorrowingRecord(borrowingRecordEntity) }
         } catch (e: FileNotFoundException) {
             emptyList()
+        } catch (e: Exception){
+            println("Borrowing Operations data is corrupted. The story has been updated")
+            emptyList()
         }
     }
 
