@@ -10,5 +10,5 @@ import javax.inject.Singleton
 abstract class LibraryModule {
     @Binds
     @Singleton
-    abstract fun binLibrary(impl: Library): LibraryOperations
+    abstract fun bindLibrary(impl: Library): LibraryOperations
 }

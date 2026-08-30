@@ -20,12 +20,16 @@ data class Book(
         return false
     }
 
-    fun plusBook(amount: Int = 1) {
-        freeAmount += amount
+    fun plusBook(amount: Int = 1): Boolean {
+        if (amount > 0) {
+            freeAmount += amount
+            return true
+        }
+        return false
     }
 
     fun reduceBook(amount: Int = 1): Boolean {
-        if (amount >= 0 && freeAmount - amount >= 0) {
+        if (amount > 0 && freeAmount - amount >= 0) {
             freeAmount -= amount
             return true
         }

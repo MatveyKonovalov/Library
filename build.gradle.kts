@@ -2,6 +2,8 @@ plugins {
     kotlin("jvm") version "2.0.0"
     kotlin("kapt") version "2.0.0"
     kotlin("plugin.serialization") version "2.0.0"
+    application
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "org.example"
@@ -21,6 +23,26 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
+
 kotlin {
     jvmToolchain(21)
+}
+
+application {
+    mainClass.set("org.example.MainKt")
+}
+
+tasks.jar {
+    manifest {
+        attributes["Main-Class"] = "org.example.MainKt"
+    }
+}
+
+tasks.shadowJar {
+    archiveBaseName.set("library-system")
+    archiveClassifier.set("")
+    archiveVersion.set("")
+    manifest {
+        attributes["Main-Class"] = "org.example.MainKt"
+    }
 }
