@@ -25,7 +25,7 @@ data class Book(
     }
 
     fun reduceBook(amount: Int = 1): Boolean {
-        if (freeAmount - amount >= 0) {
+        if (amount >= 0 && freeAmount - amount >= 0) {
             freeAmount -= amount
             return true
         }

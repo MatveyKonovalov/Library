@@ -1,7 +1,8 @@
 package org.example.domain.models
 
 abstract class User(val name: String, val userId: String, email: String) {
-    var email: String = email
+    var email: String =
+        if (email.checkEmailOnCorrect()) email else throw IllegalArgumentException("Incorrect email")
         private set(value: String) {
             if (value.checkEmailOnCorrect()) {
                 field = value
@@ -28,9 +29,10 @@ abstract class User(val name: String, val userId: String, email: String) {
         return false
     }
 
-    fun returnBook(isbn: String){
+    fun returnBook(isbn: String) {
         _borrowedBooks.remove(isbn)
     }
+
     override fun toString(): String {
         return "${this.javaClass.simpleName}(name=${name}, userId=${userId}, email=${email})"
     }

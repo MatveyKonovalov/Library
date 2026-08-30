@@ -30,17 +30,6 @@ class Library @Inject constructor(
         returnBorrowRecords(affectedRecords)
     }
 
-    private fun returnBorrowRecords(borrowingRecords: List<BorrowingRecord>) {
-        borrowingRecords.forEach { borrowingRecord ->
-            borrowingRecordService.deleteRecord(
-                borrowingRecord.userId,
-                borrowingRecord.isbn
-            )
-            val user = userService.findUser(userId = borrowingRecord.userId)
-            user?.returnBook(borrowingRecord.isbn)
-        }
-    }
-
     override fun findBookByIsbn(isbn: String): Book {
         return bookService.findBookByIsbn(isbn) ?: throw KeyException("Book(isbn=$isbn) is not found")
     }
@@ -133,6 +122,16 @@ class Library @Inject constructor(
         bookService.saveInFile()
         userService.saveInFile()
         borrowingRecordService.saveInFile()
+    }
+    private fun returnBorrowRecords(borrowingRecords: List<BorrowingRecord>) {
+        borrowingRecords.forEach { borrowingRecord ->
+            borrowingRecordService.deleteRecord(
+                borrowingRecord.userId,
+                borrowingRecord.isbn
+            )
+            val user = userService.findUser(userId = borrowingRecord.userId)
+            user?.returnBook(borrowingRecord.isbn)
+        }
     }
 
 }
