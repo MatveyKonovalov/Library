@@ -130,7 +130,7 @@ class UserConsoleUI @Inject constructor(private val libraryOperations: LibraryOp
         try {
             val affectedRecords = libraryOperations.borrowingRecordsWithThisBook(isbn)
             if (affectedRecords.isNotEmpty()) {
-                println("Delete all records with isbn=${isbn} and book? yes/no")
+                print("Delete all records with isbn=${isbn} and book? yes/no")
                 val answer = getUserYesNoInput()
                 if (answer == "yes") {
                     libraryOperations.removeAllBook(isbn)
@@ -139,6 +139,8 @@ class UserConsoleUI @Inject constructor(private val libraryOperations: LibraryOp
                 } else {
                     println("Deletion failed")
                 }
+            } else {
+                libraryOperations.removeAllBook(isbn)
             }
         } catch (e: KeyException) {
             println(makeRedColorText(e.message.toString()))
@@ -224,7 +226,7 @@ class UserConsoleUI @Inject constructor(private val libraryOperations: LibraryOp
 
     private fun registerUser() {
         val name = checkNoBlankInput("name")
-        val email = checkNoBlankInput("email")
+        val email = getUserEmail()
         val type = getUserType()
 
         try {
@@ -432,9 +434,9 @@ class UserConsoleUI @Inject constructor(private val libraryOperations: LibraryOp
 
         while (!result) {
             if (numInput == -1) {
-                println(ErrorFormatMessage)
+                print(ErrorFormatMessage + makeRedColorText(": "))
             } else {
-                print(makeRedColorText("Incorrect input. The Type is not found"))
+                print(makeRedColorText("Incorrect input. The Type is not found. Entry correct number: "))
             }
             val pair = checkUserCommandInput(readln(), 2, 0)
             result = pair.first
@@ -442,4 +444,19 @@ class UserConsoleUI @Inject constructor(private val libraryOperations: LibraryOp
         }
         return UserType.entries[numInput]
     }
+
+    private fun getUserEmail(): String {
+        print("Entry email: ")
+        var input = readln()
+        while (!input.checkEmailOnCorrect()) {
+            println(makeRedColorText("Incorrect email"))
+            print("Entry email: ")
+            input = readln()
+        }
+        return input
+    }
+}
+
+private fun String.checkEmailOnCorrect(): Boolean {
+    return this.contains("@") // Simple check email
 }
