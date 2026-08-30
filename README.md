@@ -6,6 +6,41 @@ The project uses a **layered architecture** inspired by Clean Architecture princ
 
 ---
 
+##  Quick Start (Linux)
+
+### 1. Install Java 21
+#### Ubuntu / Debian
+```bash
+sudo apt update && sudo apt install openjdk-21-jdk
+```
+#### Fedora / RHEL
+```bash
+sudo dnf install java-21-openjdk
+```
+
+### Verify
+```bash
+java -version
+```
+
+### 2. Run the app
+```bash
+git clone https://github.com/MatveyKonovalov/Library.git
+cd Library
+java -jar build/libs/library-system.jar
+```
+
+> **Note:** If `library-system.jar` is missing, run `./gradlew shadowJar` first.
+
+### ❌ Troubleshooting
+| Issue | Fix |
+|-------|-----|
+| `java: command not found` | Install Java 21 (see above) |
+| `no main manifest attribute` | Run `./gradlew shadowJar` |
+| `Permission denied` | `chmod +x gradlew` |
+
+---
+
 ## Architecture
 
 The application is divided into three main layers:
