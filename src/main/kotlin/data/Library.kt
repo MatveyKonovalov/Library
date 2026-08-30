@@ -14,23 +14,30 @@ class Library @Inject constructor(
     private val borrowingRecordService: BorrowingRecordOperations
 ) : LibraryOperations {
     // BOOKS MANAGEMENT
-    override fun addBooks(title: String, author: String, isbn: String, genre: String, amount: Int) {
-        bookService.addBook(title, author, isbn, genre, amount)
+    override fun addBooks(
+        title: String,
+        author: String,
+        isbn: String,
+        genre: String,
+        amount: Int
+    ): Pair<Boolean, Book> { // Boolean - is it new book?
+        return bookService.addBook(title, author, isbn, genre, amount)
     }
 
-    override fun removeAllBook(isbn: String): List<BorrowingRecord> {
+    override fun removeAllBook(isbn: String) {
         bookService.removeBook(isbn) ?: throw KeyException("Book(isbn=$isbn) is not found")
         val affectedRecords = borrowingRecordService.getAllRecordWithCurrentIsbn(isbn)
-
-        return affectedRecords
+        returnBorrowRecords(affectedRecords)
     }
 
-    override fun returnBorrowRecords(borrowingRecords: List<BorrowingRecord>) {
+    private fun returnBorrowRecords(borrowingRecords: List<BorrowingRecord>) {
         borrowingRecords.forEach { borrowingRecord ->
             borrowingRecordService.deleteRecord(
                 borrowingRecord.userId,
                 borrowingRecord.isbn
             )
+            val user = userService.findUser(userId = borrowingRecord.userId)
+            user?.returnBook(borrowingRecord.isbn)
         }
     }
 
@@ -46,12 +53,12 @@ class Library @Inject constructor(
         return bookService.findBookByAuthor(author)
     }
 
-    override fun findBookByTitle(title: String): Book {
-        return bookService.findBookByTitle(title) ?: throw KeyException("The Book(title=$title) is not found")
+    override fun findBookByTitle(title: String): List<Book> {
+        return bookService.findBookByTitle(title)
     }
 
-    override fun reduceAmountBook(isbn: String, amount: Int) {
-        bookService.reduceBookAmount(isbn, amount) ?: throw Exception("The Book with isbn is not found")
+    override fun reduceAmountBook(isbn: String, amount: Int): Pair<Boolean, Int> {
+        return bookService.reduceBookAmount(isbn, amount)
     }
 
     // USER MANAGEMENT
@@ -95,7 +102,7 @@ class Library @Inject constructor(
     }
 
     override fun returnBook(userId: String, isbn: String) {
-        val borrowingRecord = borrowingRecordService.deleteRecord(userId, isbn)
+        val borrowingRecord = borrowingRecordService.getRecordByUserIdAndIsbn(userId, isbn)
             ?: throw KeyException("Record with userId=$userId isbn=$isbn is not found")
 
         val user = userService.findUser(borrowingRecord.userId)
@@ -104,6 +111,7 @@ class Library @Inject constructor(
         if (user == null) throw Exception("It looks like this user(userId=$userId) has been deleted")
         if (book == null) throw Exception("It looks like this book(bookId=$isbn) has been deleted")
 
+        borrowingRecordService.deleteRecord(userId, isbn)
         book.plusBook()
         user.returnBook(isbn)
     }
@@ -112,9 +120,19 @@ class Library @Inject constructor(
         return borrowingRecordService.getOverdueBooksWithFine()
     }
 
+    override fun borrowingRecordsWithThisBook(isbn: String): List<BorrowingRecord> {
+        return borrowingRecordService.getAllRecordWithCurrentIsbn(isbn)
+    }
+
+    override fun getAllRecords(): List<BorrowingRecord> {
+        return borrowingRecordService.getAllRecords()
+    }
+
+
     override fun saveInFile() {
         bookService.saveInFile()
         userService.saveInFile()
         borrowingRecordService.saveInFile()
     }
+
 }

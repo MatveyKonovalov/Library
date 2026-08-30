@@ -20,7 +20,7 @@ class BorrowingRecordService @Inject constructor(private val borrowingRecordDao:
         borrowingRecordDao.addRecord(record)
     }
 
-    private fun getAllRecords(): List<BorrowingRecord> {
+    override fun getAllRecords(): List<BorrowingRecord> {
         return borrowingRecordDao.getAllRecords()
     }
 
@@ -42,7 +42,17 @@ class BorrowingRecordService @Inject constructor(private val borrowingRecordDao:
         return getAllRecords().filter { borrowingRecord -> borrowingRecord.isbn == isbn }
     }
 
+    override fun getRecordByUserIdAndIsbn(userId: String, isbn: String): BorrowingRecord? {
+        getAllRecords().forEach { borrowingRecord ->
+            if (borrowingRecord.isbn == isbn && borrowingRecord.userId == userId) {
+                return borrowingRecord
+            }
+        }
+        return null
+    }
+
     override fun saveInFile() {
         borrowingRecordDao.saveBorrowingRecordsInFile()
     }
+
 }

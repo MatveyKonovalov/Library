@@ -17,7 +17,7 @@ class UserConsoleUI @Inject constructor(private val libraryOperations: LibraryOp
         private val ErrorCommandNumMessage =
             "${Colors.RED.command}Incorrect input. The Command is not found${Colors.RESET_COLORS.command}"
         private val ErrorAmountMessage =
-            "${Colors.RED.command}Incorrect input.The quantity must be positive${Colors.RESET_COLORS}"
+            "${Colors.RED.command}Incorrect input.The quantity must be positive${Colors.RESET_COLORS.command}"
         private val ErrorAnswerForYesNoQuestionMessage =
             "${Colors.RED.command}Incorrect input. Enter yes or no${Colors.RESET_COLORS.command}"
 
@@ -95,8 +95,16 @@ class UserConsoleUI @Inject constructor(private val libraryOperations: LibraryOp
         if (isAddedSomeBooks) {
             amount = checkAmountInput("books")
         }
-        libraryOperations.addBooks(title, author, isbn, genre, amount)
-        println("The addition was successful. Books added: ${amount}\n")
+        val result = libraryOperations.addBooks(title, author, isbn, genre, amount)
+        if (result.first) {
+            println(
+                "\nThe book with this ISBN=$isbn (the isbn must be unique) already exists. Increasing the quantity " +
+                        "by $amount"
+            )
+            println("Latest information: ${result.second}\n")
+        } else {
+            println("\nThe new book was created in a quantity of $amount copies\n")
+        }
     }
 
     private fun reduceAmountBooks() {
@@ -104,29 +112,34 @@ class UserConsoleUI @Inject constructor(private val libraryOperations: LibraryOp
         val amount = checkAmountInput("books")
 
         try {
-            libraryOperations.reduceAmountBook(isbn, amount)
-            println("Removed books: $amount")
-        } catch (e: Exception) {
+            val result = libraryOperations.reduceAmountBook(isbn, amount)
+            if (result.first) {
+                println("Removed books: $amount")
+            } else {
+                println("Cannot delete $amount books. There are ${result.second} books in total.")
+            }
+
+        } catch (e: IllegalArgumentException) {
             println(Colors.RED.command + e.message + Colors.RESET_COLORS.command)
         }
     }
 
     private fun removeBook() {
         val isbn: String = checkNoBlankInput("isbn")
-        var affectedRecords = emptyList<BorrowingRecord>()
 
         try {
-            affectedRecords = libraryOperations.removeAllBook(isbn)
+            val affectedRecords = libraryOperations.borrowingRecordsWithThisBook(isbn)
             if (affectedRecords.isNotEmpty()) {
-                println("Delete all records with isbn=${isbn}? yes/no")
+                println("Delete all records with isbn=${isbn} and book? yes/no")
                 val answer = getUserYesNoInput()
                 if (answer == "yes") {
-                    libraryOperations.returnBorrowRecords(affectedRecords)
+                    libraryOperations.removeAllBook(isbn)
                     println("All records with isbn=${isbn} were deleted")
+                    println("Book with isbn=$isbn was deleted")
+                } else {
+                    println("Deletion failed")
                 }
-
             }
-            println("Book with isbn=$isbn was deleted")
         } catch (e: KeyException) {
             println(makeRedColorText(e.message.toString()))
         }
@@ -146,11 +159,12 @@ class UserConsoleUI @Inject constructor(private val libraryOperations: LibraryOp
     private fun searchBookByTitle() {
         val title = checkNoBlankInput("title")
 
-        try {
-            val book = libraryOperations.findBookByTitle(title)
-            println("The found book: $book")
-        } catch (e: KeyException) {
-            println(makeRedColorText(e.message.toString()))
+        val books = libraryOperations.findBookByTitle(title)
+        if (books.isEmpty()) {
+            println("There are no books with that name=$title")
+        } else {
+            println("Found books: ")
+            books.forEach { println("\t$it") }
         }
     }
 
@@ -165,7 +179,6 @@ class UserConsoleUI @Inject constructor(private val libraryOperations: LibraryOp
                 println("\t$book")
             }
         }
-        bookManagementMenu()
     }
 
     private fun showAllBooks() {
@@ -177,7 +190,6 @@ class UserConsoleUI @Inject constructor(private val libraryOperations: LibraryOp
             println("Books: ")
             books.forEach { println("\t$it") }
         }
-        bookManagementMenu()
     }
 
     // 2
@@ -248,16 +260,17 @@ class UserConsoleUI @Inject constructor(private val libraryOperations: LibraryOp
 
     // 3
     private fun borrowingOperations() {
-        var userInput = 4
-        val maxValue = 4
-        val defaultValue = 4
+        var userInput = 5
+        val maxValue = 5
+        val defaultValue = 5
 
         while (userInput != 0) {
             when (userInput) {
                 1 -> borrowBook()
                 2 -> returnBook()
                 3 -> showOverdueBooks()
-                4 -> borrowingOperationsMenu()
+                4 -> showAllBorrowingRecords()
+                5 -> borrowingOperationsMenu()
             }
             print("Enter next command: ")
             val userInputCheckResult = checkUserCommandInput(readln(), maxValue, defaultValue)
@@ -272,7 +285,8 @@ class UserConsoleUI @Inject constructor(private val libraryOperations: LibraryOp
         println("1. Borrow the book")
         println("2. Return the book")
         println("3. Get overdue books")
-        println("4. Show The Borrowing Operations Menu")
+        println("4. Show all borrowing records")
+        println("5. Show The Borrowing Operations Menu")
         println("0. Quit from Borrowing Operations")
     }
 
@@ -314,6 +328,16 @@ class UserConsoleUI @Inject constructor(private val libraryOperations: LibraryOp
             overdueBooksWithFine.forEach { (overdueBookRecord, fine) ->
                 println("\t$overdueBookRecord Fine: $fine")
             }
+        }
+    }
+
+    private fun showAllBorrowingRecords() {
+        val borrowingRecords = libraryOperations.getAllRecords()
+        if (borrowingRecords.isEmpty()) {
+            println("There are no records yet")
+        } else {
+            println("Borrowing Records: ")
+            borrowingRecords.forEach { println("\t$it") }
         }
     }
 

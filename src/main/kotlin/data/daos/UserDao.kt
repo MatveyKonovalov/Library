@@ -19,7 +19,12 @@ class UserDao @Inject constructor(private val userMapper: UserMapper) {
     private val users by lazy {
         loadUserFromFile().toMutableMap()
     }
-    private var id = (users.values.lastOrNull()?.userId?.toInt() ?: -1) + 1
+    private var id =
+        users.keys
+            .mapNotNull { it.toIntOrNull() }
+            .maxOrNull()
+            ?.plus(1)
+            ?: 0
 
     fun findUser(userId: String): User? {
         return users[userId]
@@ -58,6 +63,9 @@ class UserDao @Inject constructor(private val userMapper: UserMapper) {
             val usersEntities: Map<String, UserEntity> = Json.decodeFromString(jsonMap)
             usersEntities.map { (key, userEntity) -> key to userMapper.toUser(userEntity) }.toMap()
         } catch (e: FileNotFoundException) {
+            emptyMap()
+        } catch (e: Exception){
+            println("User data is corrupted. The story has been updated")
             emptyMap()
         }
     }
