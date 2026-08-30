@@ -41,7 +41,7 @@ java -version
 ```bash
 git clone https://github.com/MatveyKonovalov/Library.git
 cd Library
-java -jar build/libs/library-system.jar
+java -jar library-system.jar
 ```
 
 > **Note:** If `library-system.jar` is missing, run `./gradlew shadowJar` first.
