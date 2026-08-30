@@ -7,4 +7,5 @@ interface BorrowingRecordOperations{
     fun addRecord(record: BorrowingRecord)
     fun getOverdueBooksWithFine(): List<Pair<BorrowingRecord, Double>>
     fun getAllRecordWithCurrentIsbn(isbn: String): List<BorrowingRecord>
+    fun saveInFile()
 }

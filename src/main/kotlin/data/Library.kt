@@ -55,14 +55,8 @@ class Library @Inject constructor(
     }
 
     // USER MANAGEMENT
-    override fun registerUser(name: String, userId: String, email: String, userType: UserType) {
-        userService.registerUser(
-            when (userType) {
-                UserType.GUEST -> Guest(name, userId, email)
-                UserType.STUDENT -> Student(name, userId, email)
-                UserType.FACULTY -> Faculty(name, userId, email)
-            }
-        )
+    override fun registerUser(name: String, email: String, userType: UserType): String {
+        return userService.registerUser(name, email, userType)
     }
 
     override fun findUser(userId: String): User {
@@ -116,5 +110,11 @@ class Library @Inject constructor(
 
     override fun getOverdueBooksWithFine(): List<Pair<BorrowingRecord, Double>> {
         return borrowingRecordService.getOverdueBooksWithFine()
+    }
+
+    override fun saveInFile() {
+        bookService.saveInFile()
+        userService.saveInFile()
+        borrowingRecordService.saveInFile()
     }
 }

@@ -41,4 +41,8 @@ class BorrowingRecordService @Inject constructor(private val borrowingRecordDao:
     override fun getAllRecordWithCurrentIsbn(isbn: String): List<BorrowingRecord> {
         return getAllRecords().filter { borrowingRecord -> borrowingRecord.isbn == isbn }
     }
+
+    override fun saveInFile() {
+        borrowingRecordDao.saveBorrowingRecordsInFile()
+    }
 }

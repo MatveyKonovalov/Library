@@ -1,7 +1,6 @@
 package org.example.domain.models
 
 import java.time.LocalDate
-import java.time.LocalTime
 
 data class BorrowingRecord(
     val userId: String,

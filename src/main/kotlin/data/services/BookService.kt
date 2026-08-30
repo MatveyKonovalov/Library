@@ -39,4 +39,8 @@ class BookService @Inject constructor(private val bookDao: BookDao) : BookOperat
     override fun findBookByTitle(title: String): Book? {
         return bookDao.findBookByTitle(title)
     }
+
+    override fun saveInFile() {
+        bookDao.saveBooksInFile()
+    }
 }

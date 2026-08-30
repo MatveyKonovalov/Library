@@ -1,26 +1,64 @@
 package org.example.data.daos
 
-import org.example.domain.models.User
-import org.example.domain.repositories.UserOperations
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import org.example.data.entities.UserEntity
+import org.example.data.mappers.UserMapper
+import org.example.domain.models.*
+import java.io.File
+import java.io.FileNotFoundException
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class UserDao @Inject constructor(){
-    private val users = mutableMapOf<String, User>()
+class UserDao @Inject constructor(private val userMapper: UserMapper) {
+    companion object {
+        private const val FILENAME = "users.txt"
+    }
+
+    private val users by lazy {
+        loadUserFromFile().toMutableMap()
+    }
+    private var id = (users.values.lastOrNull()?.userId?.toInt() ?: -1) + 1
 
     fun findUser(userId: String): User? {
         return users[userId]
     }
 
-    fun registerUser(user: User) {
-        if (users[user.userId] != null){
-            throw IllegalArgumentException("User with this userId<${user.userId}> already exists")
+    fun registerUser(name: String, email: String, userType: UserType): String {
+        val userId = (id++).toString()
+
+        val user = when (userType) {
+            UserType.GUEST -> Guest(name, userId, email)
+            UserType.FACULTY -> Faculty(name, userId, email)
+            UserType.STUDENT -> Student(name, userId, email)
         }
-        users[user.userId] = user
+        users[userId] = user
+        return userId
     }
 
-    fun getAllUsers(): List<User>{
+    fun getAllUsers(): List<User> {
         return users.values.toList()
+    }
+
+    fun saveUserInFile() {
+        try {
+            val jsonMap = Json.encodeToString(users.mapValues { (_, user) ->
+                userMapper.toUserEntity(user)
+            })
+            File(FILENAME).writeText(jsonMap)
+        } catch (e: Exception) {
+            println("Error saving users: ${e.message}")
+        }
+    }
+
+    private fun loadUserFromFile(): Map<String, User> {
+        return try {
+            val jsonMap = File(FILENAME).readText()
+            val usersEntities: Map<String, UserEntity> = Json.decodeFromString(jsonMap)
+            usersEntities.map { (key, userEntity) -> key to userMapper.toUser(userEntity) }.toMap()
+        } catch (e: FileNotFoundException) {
+            emptyMap()
+        }
     }
 }
