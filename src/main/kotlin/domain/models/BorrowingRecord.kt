@@ -8,4 +8,5 @@ data class BorrowingRecord(
     val isbn: String,
     val borrowDays: Int,
     val borrowingStartTime: LocalDate = LocalDate.now(),
+    val fine: Double
 )

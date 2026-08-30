@@ -6,6 +6,9 @@ import javax.inject.Singleton
 
 @Singleton
 class BookDao @Inject constructor() {
+    companion object {
+        private const val FILENAME = "books.txt"
+    }
     // key: isbn; value: self book and amount
     private val books = mutableMapOf<String, Book>()
 
@@ -26,7 +29,7 @@ class BookDao @Inject constructor() {
     }
 
     fun reduceBookAmount(isbn: String, amount: Int): Int? {
-        return books[isbn]?.reduceBook()
+        return books[isbn]?.reduceBook(amount)
     }
 
     fun getAllBooks(): List<Book> {
@@ -45,4 +48,6 @@ class BookDao @Inject constructor() {
         }
         return null
     }
+
+
 }

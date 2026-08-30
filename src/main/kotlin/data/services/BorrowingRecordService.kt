@@ -4,14 +4,15 @@ import org.example.data.daos.BorrowingRecordDao
 import org.example.domain.models.BorrowingRecord
 import org.example.domain.repositories.BorrowingRecordOperations
 import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class BorrowingRecordService @Inject constructor(private val borrowingRecordDao: BorrowingRecordDao) :
     BorrowingRecordOperations {
-    override fun deleteRecord(userId: String, recordId: String): BorrowingRecord? {
-        return borrowingRecordDao.deleteRecord(userId, recordId)
+    override fun deleteRecord(userId: String, isbn: String): BorrowingRecord? {
+        return borrowingRecordDao.deleteRecord(userId, isbn)
     }
 
 
@@ -23,17 +24,21 @@ class BorrowingRecordService @Inject constructor(private val borrowingRecordDao:
         return borrowingRecordDao.getAllRecords()
     }
 
-    override fun getOverdueBooks(): List<BorrowingRecord> {
-        return getAllRecords().filter { borrowingRecord ->
+    override fun getOverdueBooksWithFine(): List<Pair<BorrowingRecord, Double>> {
+        return getAllRecords().mapNotNull { borrowingRecord ->
             val currentDate = LocalDate.now()
-            val userBorrowDays = borrowingRecord.borrowDays.toLong()
-            val startDate = borrowingRecord.borrowingStartTime
+            val dueDate = borrowingRecord.borrowingStartTime.plusDays(borrowingRecord.borrowDays.toLong())
 
-            currentDate > startDate.plusDays(userBorrowDays)
+            if (currentDate > dueDate) {
+                val daysOverdue = ChronoUnit.DAYS.between(dueDate, currentDate)
+                borrowingRecord to daysOverdue * borrowingRecord.fine
+            } else {
+                null
+            }
         }
     }
 
     override fun getAllRecordWithCurrentIsbn(isbn: String): List<BorrowingRecord> {
-        return getAllRecords().filter{borrowingRecord ->  borrowingRecord.isbn == isbn}
+        return getAllRecords().filter { borrowingRecord -> borrowingRecord.isbn == isbn }
     }
 }

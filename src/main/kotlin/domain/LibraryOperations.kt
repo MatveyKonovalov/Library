@@ -21,6 +21,6 @@ interface LibraryOperations {
     // Borrowing operations
     fun borrowBook(userId: String, isbn: String)
     fun returnBook(userId: String, isbn: String)
-    fun getOverdueBooks(): List<BorrowingRecord>
+    fun getOverdueBooksWithFine(): List<Pair<BorrowingRecord, Double>>
     fun returnBorrowRecords(borrowingRecords: List<BorrowingRecord>)
 }

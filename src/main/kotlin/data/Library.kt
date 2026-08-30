@@ -89,7 +89,12 @@ class Library @Inject constructor(
 
         if (userResult && bookResult) {
             borrowingRecordService.addRecord(
-                BorrowingRecord(userId = userId, isbn = isbn, borrowDays = user.getBorrowDays())
+                BorrowingRecord(
+                    userId = userId,
+                    isbn = isbn,
+                    borrowDays = user.getBorrowDays(),
+                    fine = user.getFinePerDay()
+                )
             )
         }
 
@@ -109,7 +114,7 @@ class Library @Inject constructor(
         user.returnBook(isbn)
     }
 
-    override fun getOverdueBooks(): List<BorrowingRecord> {
-        return borrowingRecordService.getOverdueBooks()
+    override fun getOverdueBooksWithFine(): List<Pair<BorrowingRecord, Double>> {
+        return borrowingRecordService.getOverdueBooksWithFine()
     }
 }

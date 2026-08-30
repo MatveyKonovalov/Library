@@ -246,7 +246,7 @@ class UserConsoleUI @Inject constructor(private val libraryOperations: LibraryOp
     }
 
     // 3
-    private fun borrowingOperations(){
+    private fun borrowingOperations() {
         var userInput = 4
         val maxValue = 4
         val defaultValue = 4
@@ -275,46 +275,47 @@ class UserConsoleUI @Inject constructor(private val libraryOperations: LibraryOp
         println("0. Quit from Borrowing Operations")
     }
 
-    private fun borrowBook(){
+    private fun borrowBook() {
         val isbn = checkNoBlankInput("ISBN")
         val userId = checkNoBlankInput("userId")
 
-        try{
+        try {
             libraryOperations.borrowBook(userId, isbn)
             println("A record has been created")
-        } catch (e: KeyException){
+        } catch (e: KeyException) {
             println(makeRedColorText(e.message.toString()))
-        } catch(e: Exception){
+        } catch (e: Exception) {
             println(makeRedColorText(e.message.toString()))
         }
     }
 
-    private fun returnBook(){
+    private fun returnBook() {
         val isbn = checkNoBlankInput("ISBN")
         val userId = checkNoBlankInput("userId")
 
-        try{
+        try {
             libraryOperations.returnBook(userId, isbn)
             println("A record has been deleted")
-        } catch (e: KeyException){
+        } catch (e: KeyException) {
             println(makeRedColorText(e.message.toString()))
-        } catch(e: Exception){
+        } catch (e: Exception) {
             println(makeRedColorText(e.message.toString()))
         }
     }
 
-    private fun showOverdueBooks(){
-        val overdueBooks = libraryOperations.getOverdueBooks()
+    private fun showOverdueBooks() {
+        val overdueBooksWithFine = libraryOperations.getOverdueBooksWithFine()
 
-        if (overdueBooks.isEmpty()){
+        if (overdueBooksWithFine.isEmpty()) {
             println("There are no overdue records")
-        } else{
+        } else {
             println("Overdue records: ")
-            overdueBooks.forEach {
-                println("\t$it")
+            overdueBooksWithFine.forEach { (overdueBookRecord, fine) ->
+                println("\t$overdueBookRecord Fine: $fine")
             }
         }
     }
+
     // 4
     private fun showMenu() {
         println(makeCyanColorText("\n=== Library Management ==="))
