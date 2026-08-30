@@ -4,6 +4,20 @@ A Kotlin/JVM console application for managing books, users, and book borrowing.
 
 The project uses a **layered architecture** inspired by Clean Architecture principles, with clear separation between presentation, domain, and data layers.
 
+<div align="start">
+  <table>
+    <tr>
+      <td><img src="https://github.com/user-attachments/assets/60316197-c219-4a01-bb36-56ac9a6d4f25" width="300"></td>
+      <td><img src="https://github.com/user-attachments/assets/3b8752ae-85f5-4e9b-852b-973598afcea6" width="300"></td>
+    </tr>
+    <tr>
+      <td><img src="https://github.com/user-attachments/assets/0fd2247a-75ad-4386-98f7-01bfc5482719" width="300"></td>
+      <td><img src="https://github.com/user-attachments/assets/0644e63d-c8dd-4c38-abc5-36e705fa0230" width="300"></td>
+    </tr>
+  </table>
+</div>
+
+
 ---
 
 ##  Quick Start (Linux)
