@@ -14,13 +14,15 @@ interface LibraryOperations {
     fun findBookByTitle(title: String): Book
 
     // User Management
-    fun registerUser(name: String, userId: String, email: String, userType: UserType)
+    fun registerUser(name: String, email: String, userType: UserType): String // return back id
     fun findUser(userId: String): User
     fun getAllUsers(): List<User>
 
     // Borrowing operations
     fun borrowBook(userId: String, isbn: String)
     fun returnBook(userId: String, isbn: String)
-    fun getOverdueBooks(): List<BorrowingRecord>
+    fun getOverdueBooksWithFine(): List<Pair<BorrowingRecord, Double>>
     fun returnBorrowRecords(borrowingRecords: List<BorrowingRecord>)
+
+    fun saveInFile()
 }

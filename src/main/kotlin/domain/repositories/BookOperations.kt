@@ -11,4 +11,5 @@ interface BookOperations {
     fun getAllBooks(): List<Book>
     fun findBookByAuthor(author: String): List<Book>
     fun findBookByTitle(title: String): Book?
+    fun saveInFile()
 }
