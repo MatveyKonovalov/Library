@@ -18,6 +18,7 @@ dependencies {
     implementation("com.google.dagger:dagger:2.50")
     kapt("com.google.dagger:dagger-compiler:2.50")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+    testImplementation("io.mockk:mockk:1.13.8")
 }
 
 tasks.test {
