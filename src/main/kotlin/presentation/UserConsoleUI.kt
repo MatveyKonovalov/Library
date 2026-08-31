@@ -13,17 +13,17 @@ import kotlin.system.exitProcess
 class UserConsoleUI @Inject constructor(private val libraryOperations: LibraryOperations) {
     companion object {
         private val ErrorFormatMessage =
-            "${Colors.RED.command}Incorrect input. Enter a digit${Colors.RESET_COLORS.command}"
+            "${Colors.RED.getColor()}Incorrect input. Enter a digit${Colors.RESET_COLORS.getColor()}"
         private val ErrorCommandNumMessage =
-            "${Colors.RED.command}Incorrect input. The Command is not found${Colors.RESET_COLORS.command}"
+            "${Colors.RED.getColor()}Incorrect input. The Command is not found${Colors.RESET_COLORS.getColor()}"
         private val ErrorAmountMessage =
-            "${Colors.RED.command}Incorrect input.The quantity must be positive${Colors.RESET_COLORS.command}"
+            "${Colors.RED.getColor()}Incorrect input.The quantity must be positive${Colors.RESET_COLORS.getColor()}"
         private val ErrorAnswerForYesNoQuestionMessage =
-            "${Colors.RED.command}Incorrect input. Enter yes or no${Colors.RESET_COLORS.command}"
+            "${Colors.RED.getColor()}Incorrect input. Enter yes or no${Colors.RESET_COLORS.getColor()}"
 
-        private fun makeRedColorText(text: String) = Colors.RED.command + text + Colors.RESET_COLORS.command
-        private fun makeGreenColorText(text: String) = Colors.GREEN.command + text + Colors.RESET_COLORS.command
-        private fun makeCyanColorText(text: String) = Colors.CYAN.command + text + Colors.RESET_COLORS.command
+        private fun makeRedColorText(text: String) = Colors.RED.getColor() + text + Colors.RESET_COLORS.getColor()
+        private fun makeGreenColorText(text: String) = Colors.GREEN.getColor() + text + Colors.RESET_COLORS.getColor()
+        private fun makeCyanColorText(text: String) = Colors.CYAN.getColor() + text + Colors.RESET_COLORS.getColor()
     }
 
     fun libraryDialog() {
@@ -120,7 +120,7 @@ class UserConsoleUI @Inject constructor(private val libraryOperations: LibraryOp
             }
 
         } catch (e: IllegalArgumentException) {
-            println(Colors.RED.command + e.message + Colors.RESET_COLORS.command)
+            println(makeRedColorText(e.message.toString()))
         }
     }
 
@@ -386,7 +386,7 @@ class UserConsoleUI @Inject constructor(private val libraryOperations: LibraryOp
         print(enterMessage)
         var input = readln()
         while (input.isBlank()) {
-            println("${Colors.RED.command}The $message cannot be empty${Colors.RESET_COLORS.command}")
+            println(makeRedColorText("The $message cannot be empty"))
             print(enterMessage)
             input = readln()
         }

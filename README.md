@@ -1,6 +1,7 @@
 # Library Management System
 
 A Kotlin/JVM console application for managing books, users, and book borrowing.
+The color terminal works only on Unix systems. On Windows, the terminal will be black and white.
 
 The project uses a **layered architecture** inspired by Clean Architecture principles, with clear separation between presentation, domain, and data layers.
 
@@ -488,15 +489,15 @@ The overall dependency flow is:
 
 ```text
                     ┌───────────────┐
-                    │ Main │
+                    │ Main          │
                     └───────┬───────┘
                             ▼
                     ┌───────────────┐
-                    │ Dagger │
+                    │ Dagger        │
                     └───────┬───────┘
                             ▼
                     ┌───────────────┐
-                    │ Library │
+                    │ Library       │
                     └───────┬───────┘
                             │
                             ▼
