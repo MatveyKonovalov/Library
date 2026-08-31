@@ -517,7 +517,36 @@ The overall dependency flow is:
              ▼              ▼              ▼
         books.txt       users.txt  borrowing_records.txt
 ```
+---
+## Testing
 
+The project includes automated tests written with JUnit.
+
+To run all tests, use:
+
+```bash
+./gradlew test
+```
+
+On Windows:
+
+```bash
+gradlew.bat test
+```
+
+### Important
+
+Before running the tests, **delete the following files from the project root if they exist**:
+
+```text
+users.txt
+books.txt
+borrowing_records.txt
+```
+
+These files contain persistent application data and may affect test results. The tests are designed to run against a clean data state, so existing data should be removed before executing the test suite.
+
+---
 The main architectural principles are:
 
 * **Separation of concerns**
