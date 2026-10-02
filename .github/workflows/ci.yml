@@ -1,0 +1,27 @@
+name: CI Library
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up 21 jdk
+        uses: actions/setup-java@4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Give permission
+        run: chmod +x  gradlew
+
+      - name: Build project
+        run: ./gradlew assemble
+
+      - name: Test project
+        run: ./gradlew test --rerurn-tasks
