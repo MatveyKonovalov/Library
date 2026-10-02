@@ -24,4 +24,4 @@ jobs:
         run: ./gradlew assemble
 
       - name: Test project
-        run: ./gradlew test --rerurn-tasks
+        run: ./gradlew test --rerun-tasks
